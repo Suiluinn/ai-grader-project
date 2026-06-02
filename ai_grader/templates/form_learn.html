@@ -10,10 +10,21 @@
     <form method="POST">
         <label>Nhập tên của bạn :</label>
         <input type="text" name="username">
+        
+        <br><br>
+
+        <label>Nhập tuổi của bạn :</label>
+        <input type ="number" name="age">
+
         <button type="submit">Gửi</button>
     </form>
     {% if username%}
     <p>Xin chào,{{ username}} </p>
     {% endif%}
+
+    {% if age %}
+    <p> Bạn năm nay {{age}} tuổi.</p>
+    {% endif%}
+
 </body>
 </html>
