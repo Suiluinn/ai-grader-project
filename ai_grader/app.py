@@ -109,6 +109,16 @@ def index(): # Hoặc tên hàm trang chủ của đại vương
 def ping():
     return "Project Đầu tay đang chạy ổn định ! "
 
+@app.route('/form_learn', methods=['GET', 'POST'])
+def form_learn():
+    username = None
+
+    if request.method == 'POST':
+        username = request.form.get('username')
+
+    return render_template('form_learn.html', username=username)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
