@@ -105,6 +105,10 @@ def index(): # Hoặc tên hàm trang chủ của đại vương
         
     return render_template('home.html', user=user) # Gửi biến user ra ngoài
 
+@app.route('/ping')
+def ping():
+    return "Project Đầu tay đang chạy ổn định ! "
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
