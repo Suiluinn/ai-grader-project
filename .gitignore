@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# Flask / environment
+.env
+instance/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# VSCode
+.vscode/
+
+# Word temporary files
+~$*.docx
+
+# OS files
+.DS_Store
+Thumbs.db
+# Uploaded / generated files
+ai_grader/temp_uploads/
+ai_grader/static/documents/
+*.xlsx
+*.pdf
+*.docx

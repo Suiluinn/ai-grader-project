@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="hero-banner mb-5 rounded-4 overflow-hidden position-relative shadow-lg">
+    <div class="bg-grid-pattern position-absolute top-0 start-0 w-100 h-100"></div>
+    <div class="glow-circle position-absolute"></div>
+    
+    <div class="p-5 position-relative z-1 d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="text-white text-center text-md-start mb-4 mb-md-0">
+            <span class="badge bg-white bg-opacity-25 text-white rounded-pill px-3 py-2 mb-3 fw-bold border border-white border-opacity-50" style="backdrop-filter: blur(10px);">
+                <i class="bi bi-lightning-charge-fill text-warning"></i> Đấu Trường Coder
+            </span>
+            <h2 class="fw-bolder display-6 mb-2 text-white">Thử Thách Lập Trình C</h2>
+            <p class="fs-6 text-white-50 mb-0" style="max-width: 500px;">
+                Vượt qua các Test Cases ẩn, tối ưu hóa thuật toán và nhận phản hồi lỗi logic chuyên sâu từ Trí Tuệ Nhân Tạo.
+            </p>
+        </div>
+        <div class="d-none d-lg-flex align-items-center justify-content-center">
+            <div class="banner-icon-wrapper">
+                <i class="bi bi-braces text-white opacity-75"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h4 class="fw-bold text-dark mb-4 px-2" style="animation: fadeInUp 0.5s ease forwards; opacity: 0;">
+    <i class="bi bi-terminal text-primary me-2"></i>Thử Thách Lập Trình
+</h4>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-5">
+    {% for problem in problems %}
+    <div class="col" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: {{ loop.index0 * 0.15 }}s;">
+        <div class="card problem-card h-100 border-0 bg-white">
+            <div class="card-body p-4 d-flex flex-column position-relative overflow-hidden">
+                <i class="bi bi-file-earmark-code position-absolute watermark-icon"></i>
+                <div class="d-flex justify-content-between align-items-center mb-4 position-relative z-1">
+                    <div class="icon-box-3d shadow-sm d-flex align-items-center justify-content-center">
+                        <i class="bi bi-terminal-fill fs-5 text-white"></i>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <span class="badge bg-light text-dark border px-2 py-1 fw-medium shadow-sm"><i class="bi bi-cpu"></i> {{ problem.test_cases|length }} Tests</span>
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 shadow-sm">Dễ</span>
+                    </div>
+                </div>
+                <h5 class="card-title fw-bold text-dark mb-2 position-relative z-1">{{ problem.title }}</h5>
+                <p class="card-text text-secondary text-truncate-3 flex-grow-1 position-relative z-1" style="font-size: 0.92rem; line-height: 1.6;">
+                    {{ problem.description }}
+                </p>
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center position-relative z-1">
+                    <div class="d-flex align-items-center gap-2 text-muted small fw-bold">
+                        <i class="bi bi-stopwatch text-primary fs-5"></i> 45 Phút
+                    </div>
+                    <a href="/student/problem/{{ problem.id }}" class="btn btn-action rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2">
+                        Bắt đầu <i class="bi bi-play-circle-fill fs-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<h4 class="fw-bold text-dark mb-4 px-2" style="animation: fadeInUp 0.5s ease forwards; opacity: 0; animation-delay: 0.4s;">
+    <i class="bi bi-cpu-fill text-success me-2"></i>Đấu Trường Trắc Nghiệm AI
+</h4>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 pb-5">
+    {% for quiz in quizzes %}
+    <div class="col" style="animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; animation-delay: {{ loop.index0 * 0.15 + 0.5 }}s;">
+        <div class="card problem-card h-100 border-0 bg-white">
+            <div class="card-body p-4 d-flex flex-column position-relative overflow-hidden">
+                <i class="bi bi-ui-radios position-absolute watermark-icon" style="color: rgba(16, 185, 129, 0.05);"></i>
+
+                <div class="d-flex justify-content-between align-items-center mb-4 position-relative z-1">
+                    <div class="icon-box-3d shadow-sm d-flex align-items-center justify-content-center" style="background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 8px 15px rgba(16, 185, 129, 0.3);">
+                        <i class="bi bi-patch-question-fill fs-5 text-white"></i>
+                    </div>
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 shadow-sm">Sẵn sàng</span>
+                </div>
+
+                <h5 class="card-title fw-bold text-dark mb-2 position-relative z-1">{{ quiz.title }}</h5>
+                <p class="card-text text-secondary text-truncate-3 flex-grow-1 position-relative z-1" style="font-size: 0.92rem; line-height: 1.6;">
+                    Kiểm tra kiến thức qua bộ đề được DeepSeek nặn riêng cho bạn. Đánh giá tư duy nhanh và chính xác.
+                </p>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center position-relative z-1">
+                    <div class="d-flex align-items-center gap-2 text-muted small fw-bold">
+                        <i class="bi bi-award text-success fs-5"></i> Thang 10
+                    </div>
+                    <a href="/student/quiz/take/{{ quiz.id }}" class="btn btn-action rounded-pill px-4 py-2 fw-bold shadow-sm d-flex align-items-center gap-2">
+                        Thi ngay <i class="bi bi-arrow-right-circle-fill fs-5"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="col-12 py-5 text-center empty-state" style="animation: fadeInUp 0.5s ease forwards; opacity: 0; animation-delay: 0.6s;">
+        <div class="empty-icon-wrapper mb-4 mx-auto d-flex align-items-center justify-content-center bg-light rounded-circle" style="width: 80px; height: 80px;">
+            <i class="bi bi-journal-x text-muted" style="font-size: 2rem;"></i>
+        </div>
+        <h5 class="text-dark fw-bold">Chưa có bài thi trắc nghiệm</h5>
+        <p class="text-secondary small">Vui lòng đợi giảng viên kích hoạt bài thi trắc nghiệm AI.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    /* HERO BANNER - Đổi màu nền xanh đậm cực ngầu */
+    .hero-banner { 
+        background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); 
+    }
+    
+    /* Lưới nền (Grid Pattern) tạo cảm giác công nghệ */
+    .bg-grid-pattern {
+        background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
+        opacity: 0.6;
+    }
+    
+    /* Vòng sáng (Glow) phía sau */
+    .glow-circle {
+        width: 300px; height: 300px;
+        background: radial-gradient(circle, rgba(99,102,241,0.4) 0%, rgba(0,0,0,0) 70%);
+        top: -50px; right: -50px;
+        border-radius: 50%;
+        filter: blur(40px);
+    }
+    
+    /* Icon to trên banner */
+    .banner-icon-wrapper {
+        font-size: 8rem;
+        line-height: 1;
+        transform: rotate(15deg);
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+    }
+
+    /* CARD BÀI TẬP */
+    .problem-card {
+        border-radius: 20px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 1px solid rgba(0,0,0,0.03) !important;
+    }
+    
+    /* Viền gradient nhấp nháy khi hover */
+    .problem-card::before {
+        content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+        border-radius: 20px; padding: 3px;
+        background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude;
+        opacity: 0; transition: opacity 0.4s ease; z-index: 2; pointer-events: none;
+    }
+
+    .problem-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    .problem-card:hover::before { opacity: 1; }
+
+    /* Watermark chìm siêu bự ở góc dưới */
+    .watermark-icon {
+        font-size: 10rem;
+        color: rgba(0,0,0,0.02);
+        bottom: -30px;
+        right: -30px;
+        transform: rotate(-15deg);
+        pointer-events: none;
+    }
+
+    /* Icon box có chiều sâu (3D) */
+    .icon-box-3d {
+        width: 50px; height: 50px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        box-shadow: 0 8px 15px rgba(37, 99, 235, 0.3), inset 0 2px 4px rgba(255,255,255,0.4);
+    }
+
+    /* Giới hạn text 3 dòng */
+    .text-truncate-3 { 
+        display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; 
+    }
+
+    /* Nút bấm (Button) xịn */
+    .btn-action { 
+        background: #f1f5f9; 
+        color: #0f172a; 
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+    .problem-card:hover .btn-action {
+        background: #2563eb;
+        color: white;
+        border-color: #2563eb;
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4) !important;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(40px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+
+
+{% endblock %}

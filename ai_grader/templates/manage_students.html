@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h3 class="fw-bold text-dark"><i class="fas fa-users-cog me-2 text-primary"></i>Quản Lý Sinh Viên</h3>
+        <p class="text-muted">Thêm mới, tìm kiếm và quản lý thông tin sinh viên trong hệ thống</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-uppercase small text-muted">Thêm sinh viên mới</h6>
+            <form action="/teacher/students/add" method="POST" class="row g-3">
+                <div class="col-md-3">
+                    <input type="text" name="student_id" class="form-control bg-light border-0 py-2" placeholder="Mã Sinh Viên (MSV)" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="full_name" class="form-control bg-light border-0 py-2" placeholder="Họ và Tên">
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="username" class="form-control bg-light border-0 py-2" placeholder="Tên đăng nhập (Tùy chọn)">
+                </div>
+                <div class="col-md-2">
+                    <input type="password" name="password" class="form-control bg-light border-0 py-2" placeholder="Mật khẩu" required>
+                </div>
+                <div class="col-md-1">
+                    <button type="submit" class="btn btn-primary w-100 py-2 shadow-sm">
+                        <i class="fas fa-plus"></i> Thêm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 py-3">MSV</th>
+                            <th class="py-3">Họ và Tên</th>
+                            <th class="py-3">Tài khoản</th>
+                            <th class="py-3">Trường / Khoa</th>
+                            <th class="py-3 text-center">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in students %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-primary">{{ s.student_id }}</td>
+                            <td>{{ s.full_name or 'Chưa cập nhật' }}</td>
+                            <td class="text-muted">{{ s.username or s.student_id }}</td>
+                            <td>{{ s.school or '---' }}</td>
+                            <td class="text-center">
+                                <a href="/teacher/students/delete/{{ s.id }}" 
+                                   class="btn btn-sm btn-outline-danger px-3 rounded-pill"
+                                   onclick="return confirm('Bạn có chắc chắn muốn xóa sinh viên này?')">
+                                    <i class="fas fa-trash-alt me-1"></i> Xóa
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">Chưa có sinh viên nào trong danh sách.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Làm đẹp các ô nhập liệu khi focus */
+    .form-control:focus {
+        background-color: #fff !important;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.1);
+        border: 1px solid #0d6efd !important;
+    }
+    
+    .table thead th {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #6c757d;
+        border-bottom: none;
+    }
+    
+    .table tbody td {
+        border-bottom: 1px solid #f8f9fa;
+    }
+</style>
+{% endblock %}

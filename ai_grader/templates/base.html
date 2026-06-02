@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>AI-Grader Pro | Hệ thống chấm điểm thông minh</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --primary-blue: #1a237e;
+            --light-blue: #e8f0fe;
+            --text-dark: #333;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* SIDEBAR CỐ ĐỊNH BÊN TRÁI */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background-color: #ffffff;
+            border-right: 1px solid #dee2e6;
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.03);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            text-align: center;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .sidebar-header h4 {
+            color: var(--primary-blue);
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+            flex-grow: 1;
+        }
+
+        .nav-item-custom {
+            display: flex;
+            align-items: center;
+            padding: 14px 25px;
+            color: #5f6368;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin: 4px 15px;
+            border-radius: 12px;
+        }
+
+        .nav-item-custom i {
+            width: 25px;
+            font-size: 1.1rem;
+            margin-right: 15px;
+        }
+
+        .nav-item-custom:hover {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+        }
+
+        .nav-item-custom.active {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        /* NAVBAR PHÍA TRÊN */
+        .top-navbar {
+            height: 75px;
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            background-color: var(--primary-blue);
+            z-index: 1040;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .top-navbar h5 {
+            color: white;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .user-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-greeting {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 8px 20px;
+            border-radius: 50px;
+            color: white;
+            font-size: 0.95rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-logout-top {
+            background-color: #ff5252;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-logout-top:hover {
+            opacity: 0.9;
+            color: white;
+        }
+
+        /* VÙNG NỘI DUNG CHÍNH */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            padding: 105px 40px 40px 40px; /* Top padding = Navbar height + offset */
+            min-height: 100vh;
+        }
+
+        /* Alerts Custom */
+        .alert {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+    <a href="/" class="text-decoration-none" style="color: inherit;">
+        <h4><i class="fas fa-robot me-2"></i>AI-GRADER</h4>
+    </a>
+</div>
+        
+        <div class="nav-menu">
+            {% if session['role'] == 'Admin' %}
+                <a href="/teacher" class="nav-item-custom">
+                    <i class="fas fa-layer-group"></i> Ngân hàng đề thi
+                </a>
+                <a href="/teacher/bulk_grade" class="nav-item-custom">
+                    <i class="fas fa-upload"></i> Chấm hàng loạt
+                </a>
+                <a href="/teacher/dashboard" class="nav-item-custom">
+                    <i class="fas fa-chart-pie"></i> Bảng điểm lớp
+                </a>
+                <a href="/teacher/students" class="nav-item-custom">
+                    <i class="fas fa-user-graduate"></i> Quản lý sinh viên
+                </a>
+            {% else %}
+                <a href="/student" class="nav-item-custom">
+                    <i class="fas fa-book-open"></i> Bài tập của tôi
+                </a>
+                <li class="nav-item mb-1">
+
+                <a href="/student/quiz-history" class="nav-item-custom">
+                    <i class="fas fa-history"></i> Lịch sử làm bài
+                </a>
+
+                <a href="/student/documents" class="nav-item-custom {{ 'active' if request.path == '/student/documents' }}">
+    <i class="fas fa-book"></i> Tài liệu bài giảng
+</a>
+</li>
+</li>
+                <a href="/profile" class="nav-item-custom">
+                    <i class="fas fa-user-cog"></i> Hồ sơ cá nhân
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="top-navbar">
+        <h5>Hệ thống Quản lý & Chấm điểm tự động</h5>
+        
+        <div class="user-section">
+            <div class="user-greeting shadow-sm">
+                <i class="fas fa-circle-user fa-lg me-2"></i>
+                Xin chào, <strong>{{ session.get('display_name', 'Người dùng') }}</strong>
+            </div>
+            
+            <a href="/logout" class="btn btn-danger ...">
+    <i class="bi bi-power"></i> Thoát
+</a>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        <i class="fas {% if category == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+</body>
+</html>

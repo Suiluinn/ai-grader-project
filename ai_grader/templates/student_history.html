@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid pb-5">
+    
+    <div class="mb-4 pb-3 border-bottom border-primary border-opacity-25">
+        <h3 class="fw-bold text-primary mb-1">
+            <i class="bi bi-clock-history me-2"></i>Hồ Sơ Điểm Số
+        </h3>
+        <p class="text-secondary small mb-0">Theo dõi toàn bộ lịch sử hoàn thành bài tập Code Tự Luận và Trắc Nghiệm AI.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="border: 1px solid #cce3f6 !important;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 bg-white">
+                <thead style="background-color: #f0f7ff;">
+                    <tr>
+                        <th class="px-4 py-3 text-primary small fw-bold text-uppercase">Phân Loại</th>
+                        <th class="py-3 text-primary small fw-bold text-uppercase">Tên Bài Thi</th>
+                        <th class="py-3 text-primary small fw-bold text-uppercase">Thời Gian Nộp</th>
+                        <th class="py-3 text-primary small fw-bold text-uppercase text-center">Điểm Số</th>
+                        <th class="py-3 text-end px-4 text-primary small fw-bold text-uppercase">Hành Động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for res in history %}
+                    <tr style="transition: background-color 0.2s;">
+                        
+                        <td class="px-4 py-3">
+                            <span class="badge bg-{{ res.badge_color }} bg-opacity-10 text-{{ res.badge_color }} px-3 py-2 rounded-pill border border-{{ res.badge_color }} border-opacity-25">
+                                <i class="bi {{ res.icon }} me-1"></i> {{ res.type }}
+                            </span>
+                        </td>
+
+                        <td class="py-3">
+                            <span class="fw-bold text-dark">{{ res.title }}</span>
+                        </td>
+
+                        <td class="py-3 text-muted small fw-medium">
+                            {% if res.time %}
+                                <i class="bi bi-calendar2-check me-1"></i> {{ res.time.strftime('%H:%M - %d/%m/%Y') }}
+                            {% else %}
+                                Không xác định
+                            {% endif %}
+                        </td>
+
+                        <td class="py-3 text-center">
+    <span class="badge {% if res.score >= (res.max_score / 2) %}bg-success{% else %}bg-danger{% endif %} fs-6 px-3 py-2 rounded-pill shadow-sm">
+        {{ res.score }} / {{ res.max_score }}
+    </span>
+</td>
+
+                        <td class="py-3 text-end px-4">
+    {% if res.type == 'Trắc nghiệm AI' %}
+        <a href="/student/quiz/result/{{ res.id }}" class="btn btn-sm btn-outline-primary fw-bold rounded-pill px-3">
+            <i class="bi bi-eye me-1"></i> Đáp án
+        </a>
+    {% else %}
+        <a href="/student/submission/{{ res.id }}" class="btn btn-sm btn-primary fw-bold rounded-pill px-3">
+            <i class="bi bi-code-square me-1"></i> Xem Code
+        </a>
+    {% endif %}
+</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <div class="bg-light rounded-circle d-inline-flex justify-content-center align-items-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="bi bi-inbox fs-1 text-primary opacity-50"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1">Hồ sơ trống</h6>
+                            <p class="small mb-0">Bạn chưa làm bài nào. Hãy bắt đầu chiến đấu nhé!</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

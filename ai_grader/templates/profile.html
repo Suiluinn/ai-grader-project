@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i>Cập Nhật Hồ Sơ</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form action="/profile" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Mã Sinh Viên (MSV)</label>
+                            <input type="text" class="form-control bg-light" value="{{ user.student_id }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tên đăng nhập</label>
+                            <input type="text" class="form-control bg-light" value="{{ user.username }}" readonly>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Họ và Tên thật</label>
+                            <input type="text" name="full_name" class="form-control" value="{{ user.full_name or '' }}" placeholder="Nhập tên thật của bạn" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Số điện thoại</label>
+                            <input type="text" name="phone" class="form-control" value="{{ user.phone or '' }}" placeholder="Nhập số điện thoại">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Trường / Khoa</label>
+                            <input type="text" name="school" class="form-control" value="{{ user.school or '' }}" placeholder="Nhập tên trường học">
+                        </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Lưu thay đổi</button>
+                            <a href="/" class="btn btn-outline-secondary">Quay lại trang chủ</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

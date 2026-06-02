@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid">
+    <div class="mb-4">
+        <h3 class="fw-bold"><i class="fas fa-file-zipper me-2 text-primary"></i>Chấm Điểm Hàng Loạt (Hybrid)</h3>
+        <p class="text-muted">Tải lên file ZIP chứa bài làm (.c) của sinh viên. Tên file phải là Mã sinh viên (VD: dtc2221.c)</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <form action="/teacher/bulk_grade" method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label class="form-label fw-bold small">CHỌN ĐỀ BÀI TRONG NGÂN HÀNG (ONLINE)</label>
+                            <select name="problem_id" class="form-select bg-light border-0" required>
+                                <option value="">-- Chọn đề bài để áp dụng Test Case --</option>
+                                {% for p in problems %}
+                                <option value="{{ p.id }}">{{ p.title }} (Max: {{ p.max_score }}đ)</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="upload-zone text-center p-5 bg-light rounded-4 border border-2 border-dashed mb-4" style="border-style: dashed !important; border-color: #cbd5e1 !important;">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3"></i>
+                            <h6 class="fw-bold">Tải lên file ZIP (Offline)</h6>
+                            <p class="small text-muted">Kéo thả hoặc click để chọn file</p>
+                            <input type="file" name="zip_file" class="form-control" accept=".zip" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">
+                            <i class="fas fa-cogs me-2"></i>BẮT ĐẦU CHẤM TỰ ĐỘNG
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                
+                <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0"><i class="fas fa-list-alt me-2"></i>Bảng Kết Quả Chấm</h5>
+                        
+                        {% if results %}
+                        <a href="/teacher/export_excel" class="btn btn-success btn-sm shadow-sm">
+                            <i class="fas fa-file-excel me-2"></i>Xuất File Excel
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    {% if results %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Mã Sinh Viên</th>
+                                    <th>Tên Bài</th>
+                                    <th>Số Test Pass</th>
+                                    <th>Trạng thái</th>
+                                    <th class="text-end">Điểm số</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for r in results %}
+                                <tr>
+                                    <td class="fw-bold text-primary"><i class="fas fa-file-code me-2 text-secondary"></i>{{ r.msv }}</td>
+                                    <td><span class="text-muted small">{{ r.bai }}</span></td>
+                                    <td><span class="badge bg-secondary">{{ r.passed }}</span></td>
+                                    <td>
+                                        {% if 'Thành công' in r.status %}
+                                            <span class="text-success"><i class="fas fa-check-circle me-1"></i>{{ r.status }}</span>
+                                        {% else %}
+                                            <span class="text-danger"><i class="fas fa-times-circle me-1"></i>{{ r.status }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end fw-bold fs-5 {% if r.score >= 5 %}text-success{% else %}text-danger{% endif %}">
+                                        {{ r.score }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-clipboard-check fa-4x text-light-emphasis mb-3"></i>
+                        <p class="text-muted">Kết quả chấm điểm sẽ hiển thị tại đây.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

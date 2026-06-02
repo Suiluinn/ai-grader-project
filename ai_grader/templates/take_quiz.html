@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-lg rounded-4 mb-4 overflow-hidden">
+                <div class="card-body p-5 text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h2 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2"></i>{{ quiz.title }}</h2>
+                            <p class="opacity-75 mb-0">Đọc kỹ câu hỏi và chọn đáp án chính xác nhất.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form action="/student/quiz/submit_action/{{ quiz.id }}" method="POST" id="quizForm">
+                {% for item in questions %}
+                {% set question_index = loop.index0 %} <div class="card border-0 shadow-sm rounded-4 mb-4 quiz-item" style="border: 1px solid #f1f5f9 !important;">
+                    <div class="card-body p-4">
+                        <div class="d-flex gap-3 mb-3">
+                            <span class="badge bg-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">{{ loop.index }}</span>
+                            <h5 class="fw-bold text-dark mt-1">{{ item.q }}</h5>
+                        </div>
+
+                        <div class="row g-3">
+                            {% for option in ['a', 'b', 'c', 'd'] %}
+                            <div class="col-md-6">
+                                <label class="option-container w-100">
+                                    <input type="radio" name="q_{{ question_index }}" value="{{ option|upper }}" required>
+                                    <div class="option-card p-3 border rounded-3 transition-all cursor-pointer">
+                                        <span class="fw-bold me-2">{{ option|upper }}.</span> {{ item[option] }}
+                                    </div>
+                                </label>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                <div class="text-center mt-5 mb-5">
+                    <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold rounded-pill shadow-lg" onclick="return confirm('Nộp bài nhé đại vương?')">
+                        <i class="bi bi-cloud-arrow-up-fill me-2"></i> Nộp Bài & Xem Điểm
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .option-container input { display: none; }
+    .option-card { background: #f8fafc; border-color: #e2e8f0 !important; cursor: pointer; transition: all 0.2s; }
+    .option-card:hover { background: #f1f5f9; border-color: #cbd5e1 !important; }
+    .option-container input:checked + .option-card {
+        background: #eff6ff;
+        border-color: #3b82f6 !important;
+        color: #1e40af;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

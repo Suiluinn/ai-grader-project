@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/clike/clike.min.js"></script>
+
+<style>
+    /* Hiệu ứng mượt mà */
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .result-card { animation: fadeInUp 0.5s ease-out forwards; }
+    
+    .ai-hint-box {
+        background: linear-gradient(145deg, #f3e8ff, #ffffff);
+        border-left: 5px solid #8b5cf6;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    
+    .terminal-text { font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.95rem; }
+    .CodeMirror { height: 500px; border-radius: 0 0 8px 8px; font-size: 15px; }
+</style>
+
+<div class="mb-3">
+    <a href="/student" class="btn btn-outline-secondary shadow-sm"><i class="fas fa-arrow-left me-2"></i>Quay lại kho bài tập</a>
+</div>
+
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 sticky-top" style="top: 90px; z-index: 100;">
+            <div class="card-header bg-primary text-white fw-bold py-3">
+                <i class="fas fa-laptop-code me-2"></i> {{ problem.title }}
+            </div>
+            <div class="card-body bg-white" style="max-height: 70vh; overflow-y: auto;">
+                <p class="card-text text-dark" style="white-space: pre-wrap; line-height: 1.6;">{{ problem.description }}</p>
+            </div>
+        </div>
+
+        {% if status %}
+        <div class="card mt-4 border-0 shadow-lg result-card">
+            {% if 'Pass' in status %}
+                <div class="card-header bg-success text-white fw-bold py-3">
+                    <i class="fas fa-check-circle me-2"></i> KẾT QUẢ: THÀNH CÔNG
+                </div>
+                <div class="card-body bg-white text-center py-4">
+                    <div class="display-3 fw-bold text-success mb-0">{{ score }}</div>
+                    <div class="text-muted fw-bold">ĐIỂM SỐ ĐẠT ĐƯỢC</div>
+                </div>
+            {% else %}
+                <div class="card-header bg-danger text-white fw-bold py-3">
+                    <i class="fas fa-exclamation-triangle me-2"></i> KẾT QUẢ: THẤT BẠI
+                </div>
+                <div class="card-body bg-dark text-white">
+                    <div class="display-4 fw-bold text-danger text-center mb-2">{{ score }} đ</div>
+                    <hr class="border-secondary">
+                    <p class="mb-0 terminal-text text-warning small">Trạng thái: {{ status }}</p>
+                </div>
+                
+                {% if ai_hint %}
+                <div class="card-footer bg-white border-0 pt-0 pb-4 px-3">
+                    <div class="ai-hint-box p-3 mt-3">
+                        <h6 class="fw-bold mb-2" style="color: #7c3aed;">
+                            <i class="fas fa-robot fa-bounce me-2"></i> AI Agent Phân Tích:
+                        </h6>
+                        <p class="mb-0 text-dark small" style="line-height: 1.5;">
+                            {{ ai_hint }}
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
+                <span class="fw-bold"><i class="fas fa-code me-2"></i>Solution.c (GCC 11)</span>
+                <span class="badge bg-secondary opacity-75">Dracula Theme</span>
+            </div>
+            
+            <form action="/student/problem/{{ problem.id }}" method="POST" id="codeForm">
+                <textarea id="real-code-textarea" name="code" style="display: none;"></textarea>
+                
+                <textarea id="editor">{% if code_content %}{{ code_content }}{% else %}#include <stdio.h>
+
+int main() {
+    // Viết code của bạn ở đây...
+    
+    return 0;
+}{% endif %}</textarea>
+                
+                <div class="p-3 bg-white border-top d-flex justify-content-between align-items-center">
+                    <small class="text-muted"><i class="fas fa-info-circle me-1"></i> Nhấn Test Code để gửi bài chấm tự động.</small>
+                    <button type="button" id="submitBtn" onclick="submitCode()" class="btn btn-primary px-5 fw-bold shadow-sm">
+                        <span id="btnIcon"><i class="fas fa-paper-plane me-2"></i></span>
+                        <span id="btnSpinner" class="spinner-border spinner-border-sm d-none me-2"></span>
+                        <span id="btnText">Nộp bài & Test Code</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Khởi tạo CodeMirror
+    var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+        lineNumbers: true,
+        mode: "text/x-csrc",
+        theme: "dracula",
+        indentUnit: 4,
+        matchBrackets: true,
+        autoCloseBrackets: true,
+        lineWrapping: true
+    });
+
+    function submitCode() {
+        var btn = document.getElementById('submitBtn');
+        var icon = document.getElementById('btnIcon');
+        var spinner = document.getElementById('btnSpinner');
+        var text = document.getElementById('btnText');
+
+        // Hiệu ứng Loading
+        btn.disabled = true;
+        btn.classList.replace('btn-primary', 'btn-secondary');
+        icon.classList.add('d-none');
+        spinner.classList.remove('d-none');
+        text.innerText = "Hệ thống đang chấm...";
+
+        // Đồng bộ CodeMirror sang Textarea thật
+        document.getElementById('real-code-textarea').value = editor.getValue();
+        
+        // Gửi Form
+        setTimeout(function() {
+            document.getElementById('codeForm').submit();
+        }, 400);
+    }
+</script>
+{% endblock %}

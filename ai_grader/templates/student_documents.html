@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid py-4" style="background-color: #f4f7fe; min-height: 100vh;">
+    <!-- Tiêu đề trang đồng bộ trắng-xanh -->
+    <div class="d-flex align-items-center mb-4">
+        <div class="bg-primary text-white p-3 rounded-3 me-3 shadow-sm">
+            <i class="fas fa-book-reader fa-lg"></i>
+        </div>
+        <div>
+            <h3 class="fw-bold text-dark mb-0">Thư Viện Tài Liệu</h3>
+            <p class="text-muted mb-0">Nơi lưu trữ bài giảng và kiến thức bổ trợ</p>
+        </div>
+    </div>
+
+    <div class="row">
+        {% for doc in documents %}
+        <div class="col-md-4 col-xl-3 mb-4">
+            <div class="card border-0 shadow-sm h-100 p-2" style="border-radius: 20px; transition: transform 0.3s;">
+                <!-- Thumbnail file PDF -->
+                <div class="text-center py-4 mb-2" style="background-color: #f8f9fa; border-radius: 15px;">
+                    <i class="fas fa-file-pdf fa-4x" style="color: #e74c3c;"></i>
+                </div>
+                
+                <div class="card-body p-3">
+                    <h6 class="fw-bold text-dark mb-1 text-truncate" title="{{ doc.title }}">
+                        {{ doc.title }}
+                    </h6>
+                    <p class="text-muted small mb-3">
+                        <i class="far fa-file-alt me-1"></i> {{ doc.file_name }}
+                    </p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="badge bg-light text-primary rounded-pill px-3 py-2">PDF</span>
+                        <a href="/view_document/{{ doc.id }}" target="_blank" 
+                           class="btn btn-primary btn-sm px-4 shadow-sm" 
+                           style="border-radius: 10px;">
+                            Mở Ngay <i class="fas fa-external-link-alt ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="bg-white d-inline-block p-5 rounded-circle shadow-sm mb-3">
+                <i class="fas fa-folder-open fa-4x text-light"></i>
+            </div>
+            <h5 class="text-muted">Chưa có tài liệu nào được tải lên</h5>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
+{% endblock %}

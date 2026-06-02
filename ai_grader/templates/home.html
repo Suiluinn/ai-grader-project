@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI-Grader Pro | Nền tảng Đánh giá Mã nguồn</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
+        
+        /* Glassmorphism Navbar */
+        .navbar-glass {
+            background: rgba(255, 255, 255, 0.8) !important;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+        }
+        .navbar-brand { font-weight: 800; color: #0ea5e9 !important; letter-spacing: -0.5px; }
+        
+        /* Hero Section Xịn xò */
+        .hero-section {
+            position: relative;
+            background: radial-gradient(circle at top right, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 140px 0 100px 0;
+            overflow: hidden;
+        }
+        /* Hiệu ứng tia sáng lưới */
+        .hero-section::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image: linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px; opacity: 0.3; pointer-events: none;
+        }
+        
+        .hero-title { font-size: 3.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 25px; }
+        .text-gradient { background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Buttons */
+        .btn-glow {
+            background: linear-gradient(135deg, #0ea5e9, #3b82f6); color: white; font-weight: 600; border: none;
+            border-radius: 50px; padding: 14px 35px; transition: all 0.4s ease;
+            box-shadow: 0 10px 20px -10px rgba(14, 165, 233, 0.8);
+        }
+        .btn-glow:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -10px rgba(14, 165, 233, 1); color: white; }
+        
+        /* Terminal Mockup - Đỉnh cao UI IT */
+        .terminal-box {
+            background-color: #0f172a; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); overflow: hidden;
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .terminal-header { background: #1e293b; padding: 12px 15px; display: flex; gap: 8px; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .dot-red { background: #ef4444; } .dot-yellow { background: #eab308; } .dot-green { background: #22c55e; }
+        .terminal-body { padding: 25px; font-family: 'Fira Code', monospace; font-size: 0.9rem; color: #a1a1aa; text-align: left; }
+        
+        /* Hiệu ứng chữ gõ trong Terminal */
+        .term-line { opacity: 0; animation: fadeInTerm 0.1s forwards; margin-bottom: 10px; }
+        .d-1 { animation-delay: 0.5s; } .d-2 { animation-delay: 1.5s; } .d-3 { animation-delay: 3s; color: #10b981; font-weight: bold;} .d-4 { animation-delay: 4s; color: #38bdf8;}
+        @keyframes fadeInTerm { to { opacity: 1; } }
+
+        /* Card Tính năng */
+        .feature-card { background: white; border-radius: 20px; padding: 30px; border: none; transition: all 0.3s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .feature-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.08); }
+        .icon-box { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 28px; margin-bottom: 20px; }
+        .bg-blue-light { background: #e0f2fe; color: #0ea5e9; }
+        .bg-purple-light { background: #f3e8ff; color: #a855f7; }
+        .bg-green-light { background: #dcfce7; color: #22c55e; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-glass fixed-top py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="/">
+                <i class="bi bi-cpu fs-4 text-primary"></i> 
+                <span>AI-GRADER <span class="text-dark">PRO</span></span>
+            </a>
+            
+            <div class="d-flex gap-3 ms-auto">
+                {% if user %}
+                    <a href="{% if session.role == 'Admin' %}/teacher{% else %}/student{% endif %}" class="btn btn-outline-primary fw-bold rounded-pill px-4">
+                        <i class="bi bi-person-circle me-1"></i> Xin chào, {{ user.username }}
+                    </a>
+                    <a href="/logout" class="btn btn-danger fw-bold rounded-pill px-4">Đăng xuất</a>
+                {% else %}
+                    <a href="/login" class="btn btn-outline-dark fw-bold rounded-pill px-4">Đăng Nhập</a>
+                    
+                {% endif %}
+            </div>
+            
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-75">
+                <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0" data-aos="fade-right" data-aos-duration="1000">
+                    <span class="badge bg-primary bg-opacity-25 text-info rounded-pill px-3 py-2 mb-3 fw-bold border border-info">
+                        <i class="bi bi-stars"></i> Đồ án Tốt nghiệp 2026 - ICTU
+                    </span>
+                    <h1 class="hero-title">Tự động hóa chấm điểm với <span class="text-gradient">Trí Tuệ Nhân Tạo</span></h1>
+                    <p class="fs-5 text-secondary text-light opacity-75 mb-4 pe-lg-4">
+                        Giải pháp toàn diện phân tích mã nguồn, phát hiện đạo văn và gợi ý sửa lỗi logic chuẩn xác, giúp nâng tầm chất lượng giảng dạy lập trình.
+                    </p>
+                    
+                    <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3">
+                        {% if user %}
+                            <a href="{% if session.role == 'Admin' %}/teacher{% else %}/student{% endif %}" class="btn btn-glow">
+                                Vào Bảng Điều Khiển <i class="bi bi-arrow-right ms-2"></i>
+                            </a>
+                        {% else %}
+                            <a href="/login" class="btn btn-glow">
+                                <i class="bi bi-box-arrow-in-right"></i> Đăng Nhập Hệ Thống
+                            </a>
+                        {% endif %}
+                    </div>
+
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1200">
+                    <div class="terminal-box">
+                        <div class="terminal-header">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                            <div class="ms-2 text-muted" style="font-size: 12px; font-family: sans-serif;">ai_core_engine.py - DeepSeek/Gemini</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="term-line d-1">➜  system git:(main) python grader.py --student_id MSV123</div>
+                            <div class="term-line d-2">[INFO] Đang nạp mã nguồn: <span>thuattoan_sort.c</span>...</div>
+                            <div class="term-line d-2">[INFO] Biên dịch qua GCC (C11): <span class="text-success">Thành công (0 warnings)</span></div>
+                            <div class="term-line d-2">[INFO] Đang chạy Test Cases (0/5)...</div>
+                            <div class="term-line d-3">✔ Test Case 1..5 PASSED [Thời gian thực thi: 0.02s]</div>
+                            <div class="term-line d-4">➜  Gọi API AI phân tích Complexity & Clean Code...</div>
+                            <div class="term-line d-4">   - Đánh giá: Logic tốt, vòng lặp tối ưu O(n log n).</div>
+                            <div class="term-line d-4 text-white fw-bold mt-2">=> TỔNG ĐIỂM: 10/10 <span class="blink">_</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-5 bg-light">
+        <div class="container py-5">
+            <div class="text-center mb-5" data-aos="fade-up">
+                <h2 class="fw-bold">Năng lực Cốt lõi của <span class="text-primary">Hệ thống</span></h2>
+                <p class="text-muted">Kiến trúc kết hợp giữa Biên dịch phần cứng (GCC) và Mô hình Ngôn ngữ Lớn (LLM).</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="feature-card h-100 text-center">
+                        <div class="icon-box bg-blue-light mx-auto"><i class="bi bi-lightning-charge-fill"></i></div>
+                        <h5 class="fw-bold">Chấm điểm Real-time</h5>
+                        <p class="text-muted fs-7">Hệ thống biên dịch và chạy test-case ẩn với tốc độ mili-giây, trả kết quả tức thì cho sinh viên.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="feature-card h-100 text-center">
+                        <div class="icon-box bg-purple-light mx-auto"><i class="bi bi-robot"></i></div>
+                        <h5 class="fw-bold">AI DeepSeek Feedback</h5>
+                        <p class="text-muted fs-7">Không chỉ báo lỗi "Sai/Đúng", AI sẽ chỉ ra dòng code bị sai logic và giải thích nguyên nhân cặn kẽ.</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="feature-card h-100 text-center">
+                        <div class="icon-box bg-green-light mx-auto"><i class="bi bi-shield-check"></i></div>
+                        <h5 class="fw-bold">Bảo mật & Scalable</h5>
+                        <p class="text-muted fs-7">Sử dụng Flask Session an toàn, mã hóa Password Hash, sẵn sàng mở rộng trên các hệ quản trị CSDL lớn.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white text-center py-4 border-top">
+        <div class="container">
+            <p class="mb-0 text-dark fw-bold">&copy; 2026 Hệ thống chấm điểm AI - ICTU</p>
+            <p class="text-muted" style="font-size: 13px;">Đồ án Tốt nghiệp xuất sắc • Khoa Công nghệ Thông tin</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ once: true, offset: 50 });
+    </script>
+</body>
+</html>

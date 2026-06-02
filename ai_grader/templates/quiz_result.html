@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <div class="display-1 fw-bold text-primary mb-2">{{ result.score }}</div>
+        <h3 class="fw-bold">Kết Quả Bài Thi: {{ quiz.title }}</h3>
+        <p class="text-muted">Hoàn thành lúc: {{ result.submitted_at.strftime('%H:%M - %d/%m/%Y') }}</p>
+        <a href="/student" class="btn btn-outline-primary rounded-pill px-4">Quay lại bảng điều khiển</a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            {% for item in questions %}
+            {% set i = loop.index0|string %}
+            {% set user_choice = user_answers[i] %}
+            
+            <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold text-dark">Câu {{ loop.index }}: {{ item.q }}</h5>
+                        {% if user_choice == item.ans %}
+                            <span class="badge bg-success"><i class="bi bi-check-lg"></i> Đúng</span>
+                        {% else %}
+                            <span class="badge bg-danger"><i class="bi bi-x-lg"></i> Sai</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="row g-2">
+                        {% for opt in ['a', 'b', 'c', 'd'] %}
+                        {% set opt_upper = opt|upper %}
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-3 
+                                {% if opt_upper == item.ans %} bg-success bg-opacity-10 border-success text-success fw-bold
+                                {% elif opt_upper == user_choice %} bg-danger bg-opacity-10 border-danger text-danger
+                                {% else %} bg-light {% endif %}">
+                                <strong>{{ opt_upper }}.</strong> {{ item[opt] }}
+                                {% if opt_upper == item.ans %} <i class="bi bi-check-circle-fill ms-2"></i> {% endif %}
+                                {% if opt_upper == user_choice and opt_upper != item.ans %} <i class="bi bi-x-circle-fill ms-2"></i> {% endif %}
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
