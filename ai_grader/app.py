@@ -112,11 +112,21 @@ def ping():
 @app.route('/form_learn', methods=['GET', 'POST'])
 def form_learn():
     username = None
+    age = None 
+    errors = []
+
 
     if request.method == 'POST':
         username = request.form.get('username')
+        age = request.form.get('age')
 
-    return render_template('form_learn.html', username=username)
+    if username == "":
+        errors.append("Vui lòng nhập tên của bạn.")
+
+    if age == "":
+        errors.append("Vui lòng nhập tuổi của bạn")
+
+    return render_template('form_learn.html', username=username, age=age, errors=errors)
 
 
 @app.route('/login', methods=['GET', 'POST'])
