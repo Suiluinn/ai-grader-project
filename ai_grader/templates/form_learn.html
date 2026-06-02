@@ -18,6 +18,14 @@
 
         <button type="submit">Gửi</button>
     </form>
+    {%if errors %}
+    {% for error in errors%}
+    <p style="color:red;">{{error}}</p>
+    {% endfor %}
+    {% endif %}
+
+
+
     {% if username%}
     <p>Xin chào,{{ username}} </p>
     {% endif%}
