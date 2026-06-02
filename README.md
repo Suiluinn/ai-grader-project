@@ -45,3 +45,7 @@ Project này được sử dụng để luyện lại các kỹ năng:
 * CRUD cơ bản
 * Đọc và sửa code
 * Viết lại từng module bằng tay
+
+## Nhật ký học tập
+
+- Ngày 1: Đưa project AI Grader lên GitHub và tạo README.
