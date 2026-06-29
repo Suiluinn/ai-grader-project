@@ -22,8 +22,8 @@ with app.app_context():
     db.create_all()
 # 1. CẤU HÌNH AI - GEMINI & DEEPSEEK
 
-GEMINI_API_KEY = "AIzaSyCrJZ9ZUgBS_KqyzE6gs3G9iZNv9Ba71PU"
-DEEPSEEK_API_KEY = "sk-720be83041494ed4b8083f67e303382b"
+GEMINI_API_KEY = "######################################3"
+DEEPSEEK_API_KEY = "#################################"
 
 def call_gemini_api(prompt, force_json=False):
    
